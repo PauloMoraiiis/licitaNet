@@ -25,7 +25,8 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $produto = Produto::create($request->all());
+        dd($produto);
     }
 
     /**

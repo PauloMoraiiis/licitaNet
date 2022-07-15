@@ -19,7 +19,7 @@ class CreateProdutosTable extends Migration
             $table->UnsignedBigInteger('cidade_id'); 
             $table->integer('cod');
             $table->string('nome');
-            $table->decimal('valor', 2);
+            $table->float('valor', 20, 2);
             $table->integer('estoque');
             $table->timestamps();
             $table->foreign('cidade_id')->references('id')->on('cidades'); //Usa o id da tabela cidades como tabela estrangeira na coluna cidades_id
