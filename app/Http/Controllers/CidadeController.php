@@ -14,7 +14,8 @@ class CidadeController extends Controller
      */
     public function index()
     {
-       
+        $cidade = Cidade::all();
+        return $cidade;
     }
 
     /**
@@ -26,7 +27,6 @@ class CidadeController extends Controller
     public function store(Request $request)
     {
         $cidade = Cidade::create($request->all());
-        dd($cidade);
     }
 
     /**
@@ -37,7 +37,7 @@ class CidadeController extends Controller
      */
     public function show(cidade $cidade)
     {
-        //
+        return $cidade;
     }
 
     /**
