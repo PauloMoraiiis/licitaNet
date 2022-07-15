@@ -49,7 +49,8 @@ class CidadeController extends Controller
      */
     public function update(Request $request, cidade $cidade)
     {
-        //
+        $cidade->update($request->all());
+        return $cidade;
     }
 
     /**
