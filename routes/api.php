@@ -18,5 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('produto', 'App\Http\Controllers\ProdutoController');
-Route::apiResource('cidade', 'App\Http\Controllers\CidadeController');
+Route::apiResource('produto', 'ProdutoController');
+Route::apiResource('cidade', 'CidadeController');
