@@ -13,15 +13,16 @@ class CreateProdutosTable extends Migration
      */
     public function up()
     {
+        //Cria tabela produtos
         Schema::create('produtos', function (Blueprint $table) {
             $table->id();
-            $table->UnsignedBigInteger('cidade_id');
+            $table->UnsignedBigInteger('cidade_id'); 
             $table->integer('cod');
             $table->string('nome');
             $table->decimal('valor', 2);
             $table->integer('estoque');
             $table->timestamps();
-            $table->foreign('cidade_id')->references('id')->on('cidades');
+            $table->foreign('cidade_id')->references('id')->on('cidades'); //Usa o id da tabela cidades como tabela estrangeira na coluna cidades_id
         });
     }
 
@@ -32,6 +33,7 @@ class CreateProdutosTable extends Migration
      */
     public function down()
     {
+        //Derruba tabela produtos
         Schema::dropIfExists('produtos');
     }
 }
