@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class CidadeController extends Controller
 {
+    public function __construct(Cidade $cidade)
+    {   
+        $this->cidade = $cidade; 
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,7 @@ class CidadeController extends Controller
      */
     public function index()
     {
-        $cidade = Cidade::all();
+        $cidade = $this->cidade->all();
         return $cidade;
     }
 
@@ -26,17 +30,18 @@ class CidadeController extends Controller
      */
     public function store(Request $request)
     {
-        $cidade = Cidade::create($request->all());
+        $cidade = $this->cidade->create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\cidade  $cidade
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function show(cidade $cidade)
+    public function show($id)
     {
+        $cidade = $this->cidade->find($id);
         return $cidade;
     }
 
@@ -44,11 +49,12 @@ class CidadeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\cidade  $cidade
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, cidade $cidade)
+    public function update(Request $request, $id)
     {
+        $cidade = $this->cidade->find($id);
         $cidade->update($request->all());
         return $cidade;
     }
@@ -56,11 +62,14 @@ class CidadeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\cidade  $cidade
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(cidade $cidade)
+    public function destroy($id)
     {
-        //
+        //O delete não vai ocorrer se a id estiver associada á um produto
+        $cidade = $this->cidade->find($id);
+        $cidade->delete();
+        return ['msg' => 'Cidade excluida!'];
     }
 }

@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
+    public function __construct(produto $produto)
+    {   
+        $this->produto = $produto; 
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,7 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        $produto = Produto::all();
+        $produto = $this->produto->all();
         return $produto;
     }
 
@@ -26,17 +30,18 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        $produto = Produto::create($request->all());
+        $produto = $this->produto->create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\produto  $produto
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function show(produto $produto)
+    public function show($id)
     {
+        $produto = $this->produto->find($id);
         return $produto;
     }
 
@@ -47,8 +52,9 @@ class ProdutoController extends Controller
      * @param  \App\Models\produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, produto $produto)
+    public function update(Request $request, $id)
     {
+        $produto = $this->produto->find($id);
         $produto->update($request->all());
         return $produto;
     }
@@ -56,11 +62,13 @@ class ProdutoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\produto  $produto
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(produto $produto)
+    public function destroy($id)
     {
-        //
+        $produto = $this->produto->find($id);
+        $produto->delete();
+        return ['msg' => 'Produto excluido!'];
     }
 }

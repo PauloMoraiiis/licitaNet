@@ -22,7 +22,11 @@ class CreateProdutosTable extends Migration
             $table->float('valor', 20, 2);
             $table->integer('estoque');
             $table->timestamps();
-            $table->foreign('cidade_id')->references('id')->on('cidades'); //Usa o id da tabela cidades como tabela estrangeira na coluna cidades_id
+            $table->foreign('cidade_id') //Usa o id da tabela cidades como tabela estrangeira na coluna cidades_id
+            ->unsigned()
+            ->nullable()
+            ->references('id')
+            ->on('cidades'); 
         });
     }
 
