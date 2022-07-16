@@ -19,7 +19,7 @@ class CidadeController extends Controller
     public function index()
     {
         $cidade = $this->cidade->all();
-        return $cidade;
+        return response()->json($cidade, 200);
     }
 
     /**
@@ -31,6 +31,7 @@ class CidadeController extends Controller
     public function store(Request $request)
     {
         $cidade = $this->cidade->create($request->all());
+        return $cidade;
     }
 
     /**
@@ -72,4 +73,5 @@ class CidadeController extends Controller
         $cidade->delete();
         return ['msg' => 'Cidade excluida!'];
     }
+    
 }

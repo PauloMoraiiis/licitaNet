@@ -17,7 +17,9 @@ class CreateProdutosTable extends Migration
         Schema::create('produtos', function (Blueprint $table) {
             $table->id();
             $table->UnsignedBigInteger('cidade_id'); 
-            $table->integer('cod');
+            $table->integer('cod')
+            ->unique()
+            ->unsigned();
             $table->string('nome');
             $table->float('valor', 20, 2);
             $table->integer('estoque');
