@@ -34,6 +34,7 @@ class CidadeController extends Controller
         return $cidade;
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -59,6 +60,8 @@ class CidadeController extends Controller
         $cidade->update($request->all());
         return $cidade;
     }
+
+    
 
     /**
      * Remove the specified resource from storage.
