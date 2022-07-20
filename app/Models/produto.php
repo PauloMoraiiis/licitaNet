@@ -13,16 +13,27 @@ class produto extends Model
     //Regras de validação
     public function rules() {
         return [
-            'cod' => 'required|unique:produtos,cod,'.$this->id.'',
-            'cidade_id' => 'required'
+            'cidade_id' => 'required|exists:cidades,id',
+            'nome' => 'required',
+            'cod' => 'required|unique:produtos,cod,'.$this->id.'|numeric',
+            'valor' => 'required|numeric',
+            'estoque' => 'required|numeric'
+            
         ];
     }
 
     //Retorno das validações
     public function feedback() { 
         return [
+            'cidade_id.exists' => 'Cidade informada não encontrada', 
             'required' => 'O campo :attribute é obrigatório',
+            'numeric' => 'O campo :attribute deve ser um número',
             'cod.unique' => 'Já existe um produto com esse código cadastrado'
         ];
+    }
+
+    public function cidade() {
+
+        return $this->belongsTo('App\Models\Cidade');
     }
 }

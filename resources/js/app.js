@@ -21,7 +21,11 @@ window.Vue = require('vue').default;
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('produtos-component', require('./components/Produtos.vue').default);
-Vue.component('listar_produtos-component', require('./components/ListarProdutos.vue').default);
+Vue.component('input-container-component', require('./components/inputContainer.vue').default);
+Vue.component('table-component', require('./components/Table.vue').default);
+Vue.component('card-component', require('./components/Card.vue').default);
+Vue.component('modal-component', require('./components/Modal.vue').default);
+Vue.component('alert-component', require('./components/Alert.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

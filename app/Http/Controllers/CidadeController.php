@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cidade;
+use App\Models\Cidade;
 use Illuminate\Http\Request;
 
 class CidadeController extends Controller
@@ -43,7 +43,7 @@ class CidadeController extends Controller
      */
     public function show($id)
     {
-        $cidade = $this->cidade->find($id);
+        $cidade = $this->cidade->with('produtos')->find($id);
         return $cidade;
     }
 

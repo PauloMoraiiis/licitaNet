@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\produto;
+use App\Models\Produto;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
@@ -16,11 +16,33 @@ class ProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //Retorna todos os produtos em um json
-        $produto = $this->produto->all();
-        return response()->json($produto, 200);
+        $produtos = array();
+
+        if($request->has('atributos_cidade')) {
+
+            //salva os atributos da requisição
+            $atributos_cidade = $request->atributos_cidade;
+            $produtos = $this->produto->with('cidade:id,'.$atributos_cidade);
+        } else {
+            $produtos = $this->produto->with('cidade');
+        }
+
+        //Se forem passados atributos seleciona apenas os mesmos
+        if($request->has('atributos')) {
+
+            //salva os atributos da requisição
+            $atributos = $request->atributos; 
+            
+            //seleciona apenas os atributos passados e adiciona a cidade correspondente ao cidade_id (belongsTo em Model/Produto)
+            $produtos = $produtos->selectRaw($atributos)->get(); 
+        } else {
+            //Se não forem passados atributos retorna o produto e adiciona a cidade correspondente ao cidade id (belongsTo em Model/Produto)
+            $produtos = $produtos->get();
+        }
+        //Retorna produtos
+        return response()->json($produtos, 200);
     }
 
     /**
@@ -44,11 +66,12 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        $produto = $this->produto->find($id); //Salva o produto referente ao id informado em $produto
+        //Localiza o produto pelo id e adiciona a cidade (belongsTo em Model/Produto)
+        $produto = $this->produto->with('cidade')->find($id);  
 
-        //Se o produto não for localizado retorna um json 
+        //Se o produto não for localizado retorna a mensagem 
         if($produto === null) {
-            return response()->json(['msg' => 'Produto não localizado'], 404);
+            return response()->json(['errors' => 'Produto não localizado'], 404);
         }
 
         return response()->json($produto, 200); //Retorna o produto em um json
@@ -67,10 +90,35 @@ class ProdutoController extends Controller
 
         //Se o produto não for localizado retorna um json
         if($produto === null) {
-            return response()->json(['erro' => 'Alteração não foi realizada'], 404); //Retorna mensagem de erro
+            return response()->json(['errors' => 'Alteração não foi realizada, produto não localizado'], 404); //Retorna mensagem de erro
         }
 
-        $request->validate($produto->rules(), $produto->feedback()); //Realiza a validação de acordo com as funções rules e feedback em Model/produto 
+
+        if($request->method() === 'PATCH') {
+
+            $regrasDinamicas = array();
+
+            //percorrendo todas as regras definidas no Model
+            foreach($produto->rules() as $input => $regra) {
+                
+                //coletar apenas as regras aplicáveis aos parâmetros parciais da requisição PATCH
+                if(array_key_exists($input, $request->all())) {
+                    $regrasDinamicas[$input] = $regra;
+                }
+            }
+            //Realiza a validação com as regras do model
+            $request->validate($regrasDinamicas, $produto->feedback());
+
+            //preenchendo o objeto $marca com todos os dados do request
+            $produto->fill($request->all());
+
+        } else {
+            $request->validate($produto->rules(), $produto->feedback());
+        }
+
+
+
+        
         $produto->update($request->all()); //Atualiza o produto na tabela
         return response()->json($produto, 200); //Retorna o produto atualizado em json
     }
@@ -86,7 +134,7 @@ class ProdutoController extends Controller
         $produto = $this->produto->find($id); //Salva o produto referente ao id informado em $produto
         //Se o produto não for localizado retorna um json
         if($produto === null) {
-            return Response()->json(['msg' => 'Impossivel realizar a exclusão, produto não localizado'], 404);
+            return Response()->json(['errors' => 'Impossivel realizar a exclusão, produto não localizado'], 404);
         }
         
         $produto->delete(); //Realiza a exclusão do produto
