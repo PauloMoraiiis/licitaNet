@@ -21,28 +21,33 @@ class ProdutoController extends Controller
         $produtos = array();
 
         if($request->has('atributos_cidade')) {
-
-            //salva os atributos da requisição
             $atributos_cidade = $request->atributos_cidade;
             $produtos = $this->produto->with('cidade:id,'.$atributos_cidade);
         } else {
             $produtos = $this->produto->with('cidade');
         }
 
-        //Se forem passados atributos seleciona apenas os mesmos
-        if($request->has('atributos')) {
+        if($request->has('filtro')) {
+            $filtros = explode(';', $request->filtro);
+            foreach($filtros as $key => $condicao) {
 
-            //salva os atributos da requisição
-            $atributos = $request->atributos; 
-            
-            //seleciona apenas os atributos passados e adiciona a cidade correspondente ao cidade_id (belongsTo em Model/Produto)
-            $produtos = $produtos->selectRaw($atributos)->get(); 
-        } else {
-            //Se não forem passados atributos retorna o produto e adiciona a cidade correspondente ao cidade id (belongsTo em Model/Produto)
-            $produtos = $produtos->get();
+                $c = explode(':', $condicao);
+                $produtos = $produtos->where($c[0], $c[1], $c[2]);
+
+            }
         }
-        //Retorna produtos
+
+        if($request->has('atributos')) {
+            $atributos = $request->atributos;
+            $produtos = $produtos->selectRaw($atributos)->get();
+        } else {
+            $produtos = $produtos->paginate(9);
+        }
+
+        //$this->modelo->with('marca')->get()
         return response()->json($produtos, 200);
+        //all() -> criando um obj de consulta + get() = collection
+        //get() -> modificar a consulta -> collection
     }
 
     /**

@@ -16,10 +16,43 @@ class CidadeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(request $request)
     {
-        $cidade = $this->cidade->all();
-        return response()->json($cidade, 200);
+        $cidades = array();
+
+        if($request->has('atributos_produtos')) {
+
+            //salva os atributos da requisição
+            $atributos_produtos = $request->atributos_produtos;
+         
+            $cidades = $this->cidade->with('produtos:id,'.$atributos_produtos);
+            
+        } else {
+            $cidades = $this->cidade->with('produtos');
+        }
+
+
+        if($request->has('filtro')) {
+            
+            $filtros = explode(';', $request->filtro);
+            foreach($filtros as $key => $condicao) {
+
+                $c = explode(':', $condicao);
+                $cidades = $cidades->where($c[0], $c[1], $c[2]);
+            }  
+        }
+
+        if($request->has('atributos')) {
+
+            //salva os atributos da requisição
+            $atributos = $request->atributos; 
+            $cidades = $cidades->selectRaw($atributos)->get(); 
+        } else {
+            $cidades = $cidades->get();
+        }
+
+        //$cidade = $this->cidade->all();
+        return response()->json($cidades, 200);
     }
 
     /**
