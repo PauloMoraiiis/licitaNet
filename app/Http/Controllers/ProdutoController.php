@@ -20,6 +20,7 @@ class ProdutoController extends Controller
     {
         $produtos = array();
 
+        // Adiciona os atributos cidades passados na requisição 
         if($request->has('atributos_cidade')) {
             $atributos_cidade = $request->atributos_cidade;
             $produtos = $this->produto->with('cidade:id,'.$atributos_cidade);
@@ -27,6 +28,7 @@ class ProdutoController extends Controller
             $produtos = $this->produto->with('cidade');
         }
 
+        // Adiciona os parâmetros de filtro passados na requisição
         if($request->has('filtro')) {
             $filtros = explode(';', $request->filtro);
             foreach($filtros as $key => $condicao) {
@@ -37,6 +39,7 @@ class ProdutoController extends Controller
             }
         }
 
+        // Adiciona os atributos de produtos
         if($request->has('atributos')) {
             $atributos = $request->atributos;
             $produtos = $produtos->selectRaw($atributos)->get();
@@ -44,10 +47,7 @@ class ProdutoController extends Controller
             $produtos = $produtos->paginate(9);
         }
 
-        //$this->modelo->with('marca')->get()
         return response()->json($produtos, 200);
-        //all() -> criando um obj de consulta + get() = collection
-        //get() -> modificar a consulta -> collection
     }
 
     /**
