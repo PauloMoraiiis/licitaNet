@@ -98,9 +98,12 @@ class ProdutoController extends Controller
             return response()->json(['errors' => 'Alteração não foi realizada, produto não localizado'], 404); //Retorna mensagem de erro
         }
 
-
+        
         if($request->method() === 'PATCH') {
 
+            
+
+           
             $regrasDinamicas = array();
 
             //percorrendo todas as regras definidas no Model
@@ -120,8 +123,6 @@ class ProdutoController extends Controller
         } else {
             $request->validate($produto->rules(), $produto->feedback());
         }
-
-
 
         
         $produto->update($request->all()); //Atualiza o produto na tabela
